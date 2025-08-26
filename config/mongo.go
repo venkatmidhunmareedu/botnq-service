@@ -29,16 +29,18 @@ func InitMongoDB() {
 	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_DB_URL"))
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatalf("MongoDB connection error: %v", err)
+		log.Fatalf("MongoDB connection error ❌: %v", err)
 	}
+	log.Println("MongoDB Client Intitialized ✅")
+	log.Println("Checking for Connection...")
 
 	// Check connection
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatalf("MongoDB ping error: %v", err)
+		log.Fatalf("MongoDB ping error ❌: %v", err)
 	}
 
-	log.Println("MongoDB Client Intitialized")
+	log.Println("MongoDB Ping Success ✅")
 	MongoClient = client
 	MongoDatabase = client.Database("ai-support-bot")
 	UserCollection = client.Database("ai-support-bot").Collection("users")

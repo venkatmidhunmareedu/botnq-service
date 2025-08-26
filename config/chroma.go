@@ -22,14 +22,14 @@ func InitChroma() {
 		chroma.WithTimeout(10*time.Second),
 	)
 	if err != nil {
-		log.Fatalln("Chroma Client Init Failed, Err ", err)
+		log.Fatalln("Chroma Client Init Failed ❌, Err ", err)
 	}
 	ollamaef, err := ollama.NewOllamaEmbeddingFunction(ollama.WithBaseURL(os.Getenv("OLLAMA_API_URL")), ollama.WithModel("nomic-embed-text"))
 	if err != nil {
-		log.Fatalln("Chroma Client Init Failed, Err ", err)
+		log.Fatalln("Chroma Client Init Failed ❌, Err ", err)
 	}
 
 	ChromaConfig.Client = &client
 	ChromaConfig.EmbeddingFunction = *ollamaef
-	log.Println("Chroma Client Intitialized")
+	log.Println("Chroma Client Intitialized ✅")
 }

@@ -17,7 +17,7 @@ func InitGemini(ctx context.Context) {
 		Backend: genai.BackendGeminiAPI,
 	})
 	if err != nil {
-		log.Fatalln("Google Client Init Failed, Err ", err)
+		log.Fatalln("Google Client Init Failed ❌, Err ", err)
 	}
-	log.Println("Google Client Intitialized")
+	log.Println("Google Client Intitialized ✅")
 }

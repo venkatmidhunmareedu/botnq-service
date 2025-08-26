@@ -34,6 +34,8 @@ func main() {
 	config.InitChroma()
 	// Init MongoDB
 	config.InitMongoDB()
+	// Ping Ollama
+	config.PingOllama()
 
 	// Server Check
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
