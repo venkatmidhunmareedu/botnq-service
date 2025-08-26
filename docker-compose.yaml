@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    entrypoint: >
+      sh -c "ollama serve & sleep 5 &&
+             ollama pull nomic-embed-text &&
+             tail -f /dev/null"
+
+  goapp:
+    build:
+      context: ./goapp
+      dockerfile: Dockerfile
+    container_name: goapp
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - chromadb
+      - ollama
+    environment:
+      MONGO_DB_URL: "mongodb://mongodb:27017"
+      CHROMA_DB_URL: "http://chromadb:8000"
+      GOOGLE_API_KEY: "AIzaSyBNchpwT90P4AK-K_MOGl19ag371JtVLJw"
+      OLLAMA_API_URL: "http://ollama:11434"
+
+volumes:
+  mongo_data:
+  chroma_data:
+  ollama_models:
