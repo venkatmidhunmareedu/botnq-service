@@ -4,6 +4,7 @@ go 1.24.4
 
 require (
 	github.com/coder/aisdk-go v0.0.9
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-chi/cors v1.2.2
 	github.com/joho/godotenv v1.5.1

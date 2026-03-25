@@ -36,7 +36,20 @@ func GetApplicationsHandler(w http.ResponseWriter, r *http.Request) {
 		utils.HandleErrorResponse(err.Error(), status, w)
 		return
 	}
-	utils.HandleSuccessResponse("Applications retrieved successfully", applications, w)
+	var applicationsResponse []models.ApplicationResponse
+	// Get Filecount for every application
+	for i := range applications {
+		fileCount, status, err := services.GetFileCount(applications[i].ID)
+		if err != nil {
+			utils.HandleErrorResponse(err.Error(), status, w)
+			return
+		}
+		applicationsResponse = append(applicationsResponse, models.ApplicationResponse{
+			Application: applications[i],
+			FileCount:   fileCount,
+		})
+	}
+	utils.HandleSuccessResponse("Applications retrieved successfully", applicationsResponse, w)
 }
 
 func GetApplicationHandler(w http.ResponseWriter, r *http.Request) {

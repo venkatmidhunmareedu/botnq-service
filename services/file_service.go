@@ -65,3 +65,13 @@ func GetFilesByApplicationID(applicationID string) ([]models.FileResponse, int, 
 	}
 	return files, http.StatusOK, nil
 }
+
+func GetFileCount(applicationID string) (int, int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	count, err := config.FileCollection.CountDocuments(ctx, bson.D{{Key: "application_id", Value: applicationID}})
+	if err != nil {
+		return 0, http.StatusInternalServerError, errors.New("failed to retrieve file count")
+	}
+	return int(count), http.StatusOK, nil
+}

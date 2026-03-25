@@ -8,17 +8,27 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func GenerateAPIKeyForUser(user *models.User) (result *mongo.UpdateResult, status int, err error) {
+func Login(user *models.LoginRequest) (*models.User, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	result, err = config.UserCollection.UpdateOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, bson.D{{Key: "api_keys", Value: bson.D{{Key: "$push", Value: uuid.New().String()}}}})
+	userExists, err := config.UserCollection.CountDocuments(ctx, bson.D{{Key: "email", Value: user.Email}})
 	if err != nil {
-		return nil, http.StatusInternalServerError, errors.New("failed to generate api key")
+		return nil, http.StatusInternalServerError, errors.New("failed to check if user already exists")
 	}
-	return result, http.StatusOK, nil
+	if userExists == 0 {
+		return nil, http.StatusNotFound, errors.New("user does not exist")
+	}
+	var temp_user models.User
+	err = config.UserCollection.FindOne(ctx, bson.D{{Key: "email", Value: user.Email}}).Decode(&temp_user)
+	if err != nil {
+		return nil, http.StatusInternalServerError, errors.New("failed to retrieve user")
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(temp_user.Password), []byte(user.Password)); err != nil {
+		return nil, http.StatusUnauthorized, errors.New("invalid password")
+	}
+	return &temp_user, http.StatusOK, nil
 }

@@ -21,6 +21,7 @@ var UserCollection *mongo.Collection
 var ApplicationCollection *mongo.Collection
 var FileCollection *mongo.Collection
 var JobCollection *mongo.Collection
+var APIKeyCollection *mongo.Collection
 
 func InitMongoDB() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -47,4 +48,5 @@ func InitMongoDB() {
 	ApplicationCollection = client.Database("ai-support-bot").Collection("applications")
 	FileCollection = client.Database("ai-support-bot").Collection("files")
 	JobCollection = client.Database("ai-support-bot").Collection("jobs")
+	APIKeyCollection = client.Database("ai-support-bot").Collection("api_keys")
 }

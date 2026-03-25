@@ -9,6 +9,11 @@ type Application struct {
 	SystemPrompt string `json:"system_prompt,omitempty" bson:"system_prompt"`
 }
 
+type ApplicationResponse struct {
+	Application
+	FileCount int `json:"file_count"`
+}
+
 type File struct {
 	ID            string    `json:"id,omitempty" bson:"_id"`
 	ApplicationID string    `json:"application_id" bson:"application_id"`
